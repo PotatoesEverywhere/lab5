@@ -14,6 +14,22 @@
 
     returns undefined (array is sorted in place)
 */
+
+$(function() {
+    sortObjArray(Employees.entries, 'last');
+    render(Employees.entries);
+    //Initial page appearance
+
+    $('.sort-ui .btn').click(function() {
+        var sortBtn = $(this);
+        sortObjArray(Employees.entries, sortBtn.attr('data-sortby'));
+        render(Employees.entries);
+        sortBtn.siblings('.active').removeClass('active');
+        sortBtn.addClass('active');
+    })//Handles resorting of entries and user clicks
+
+}); //Document Ready
+
 function sortObjArray(objArray, propName) {
     if (!objArray.sort)
         throw new Error('The objArray parameter does not seem to be an array (no sort method)');
@@ -33,4 +49,30 @@ function sortObjArray(objArray, propName) {
             return 1;
     });
 } //sortObjArray()
+
+function render(entries) {
+    var originalTemplate = $('.template');
+    var book = $('.address-book');
+    book.hide();
+    book.empty();
+
+    //Fills HTML template for each entry
+    $.each(entries, function() {
+        var template = originalTemplate.clone();
+        template.find('.first').html(this.first);
+        template.find('.last').html(this.last);
+        template.find('.title').html(this.title);
+        template.find('.dept').html(this.dept);
+        template.find('.pic').attr({
+            src: this.pic,
+            alt: 'Picture of ' + this.first + ' ' + this.last
+        });
+
+        template.removeClass('template');
+        book.append(template);
+    });
+    book.fadeIn("slow");
+}//render()
+
+
 
